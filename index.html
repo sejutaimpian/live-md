@@ -84,6 +84,80 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- plugin alpineJS, myScript, core alpineJS -->
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+    <script defer>
+        const initText = `# Markdown syntax guide
+
+## Headers
+
+# This is a Heading h1
+## This is a Heading h2
+###### This is a Heading h6
+
+## Emphasis
+
+*This text will be italic*  
+_This will also be italic_
+
+**This text will be bold**  
+__This will also be bold__
+
+_You **can** combine them_
+
+## Lists
+
+### Unordered
+
+* Item 1
+* Item 2
+* Item 2a
+* Item 2b
+
+### Ordered
+
+1. Item 1
+2. Item 2
+3. Item 3
+    1. Item 3a
+    2. Item 3b
+
+## Images
+
+![This is an alt text.](/sample.webp "This is a sample image.")
+
+## Links
+
+You may be using [Markdown Live Preview](https://markdownlivepreview.com/).
+
+## Blockquotes
+
+> Markdown is a lightweight markup language with plain-text-formatting syntax, created in 2004 by John Gruber with Aaron Swartz.
+>
+>> Markdown is often used to format readme files, for writing messages in online discussion forums, and to create rich text using a plain text editor.
+
+## Tables
+
+| Left columns  | Right columns |
+| ------------- |:-------------:|
+| left foo      | right foo     |
+| left bar      | right bar     |
+| left baz      | right baz     |
+
+## Blocks of code
+
+\`\`\`js
+    let message = 'Hello world';
+    alert(message);
+\`\`\`
+
+## Inline code
+
+This web site is using \`markedjs / marked\`.
+
+## Thanks
+Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspired me to make this project
+
+`
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 </head>
@@ -167,12 +241,13 @@
     <main
         class="overflow-y-scroll no-scrollbar flex flex-col-reverse flex-1 md:flex-row divide-y-reverse divide-y-2 md:divide-y-0 md:divide-x-2  divide-slate-300 dark:divide-slate-700 [&>*]:p-4 md:[&>*]:p-10"
         x-data="{
-            text: '# Hello',
+            text: $persist(initText),
             get markedText() {
                 return marked.parse(this.text);
             }
         }" id="main">
-        <textarea name="text" x-model="text" class="flex-1 resize-none focus:outline-none bg-inherit no-scrollbar"
+        <textarea name="text" spellcheck="false" x-model="text"
+            class="flex-1 leading-relaxed resize-none focus:outline-none bg-inherit no-scrollbar"
             placeholder="Write your markdown here..."
             @input='$refs.content.scrollTo(0, $refs.content.scrollHeight)'></textarea>
         <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert"
