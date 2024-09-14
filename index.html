@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>live-md</title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <title>Live-MD</title>
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script>
         tailwind.config = {
             darkMode: 'selector',
@@ -79,13 +79,59 @@
         }
     </style>
 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- plugin alpineJS, myScript, core alpineJS -->
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </head>
 
-<body>
-    <h1>Live MD</h1>
+<body
+    class="flex flex-col justify-between overflow-hidden bg-white h-svh text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+    @keyup.ctrl.space='isDark = !isDark'>
+    <header class="py-3 border-b bg-slate-100 dark:bg-slate-800 border-b-slate-300 dark:border-b-slate-700">
+        <nav class="flex items-center justify-between px-4 md:px-10 xl:container xl:mx-auto xl:px-0">
+            <div class="flex items-center gap-x-2">
+                <a href="/" class="mr-4">
+                    <h1 class="sr-only">Live-MD</h1>
+                    <img src="logo.png" alt="Live-MD" class="size-8 dark:invert">
+                </a>
+                <button type="button"
+                    class="px-2 py-2 text-sm font-medium tracking-wide text-center transition bg-transparent cursor-pointer md:text-base xl:text-lg whitespace-nowrap rounded-xl text-slate-900 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:text-white dark:focus-visible:outline-white">Reset</button>
+                <button type="button"
+                    class="px-2 py-2 text-sm font-medium tracking-wide text-center transition bg-transparent cursor-pointer md:text-base xl:text-lg whitespace-nowrap rounded-xl text-slate-900 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:text-white dark:focus-visible:outline-white">Copy</button>
+
+            </div>
+            <a href="https://github.com/sejutaimpian/live-md">
+                <img src="https://img.shields.io/github/stars/sejutaimpian/live-md?style=social"
+                    alt="GitHub Repo stars">
+            </a>
+        </nav>
+    </header>
+    <main
+        class="overflow-y-scroll no-scrollbar flex flex-col-reverse flex-1 md:flex-row divide-y-reverse divide-y-2 md:divide-y-0 md:divide-x-2  divide-slate-300 dark:divide-slate-700 [&>*]:p-4 md:[&>*]:p-10"
+        x-data="{
+            text: '# Hello',
+            get markedText() {
+                return marked.parse(this.text);
+            }
+        }">
+        <textarea name="text" x-model="text" class="flex-1 resize-none focus:outline-none bg-inherit no-scrollbar"
+            placeholder="Write your markdown here..." @input='$refs.content.scrollTo(0, $refs.content.scrollHeight)'
+            @keyup.escape='$refs.content.scrollTo(0, $refs.content.scrollHeight)'></textarea>
+        <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert"
+            x-html="markedText" x-ref="content"></div>
+    </main>
+    <!-- <section x-data="{
+        text: 'Hello',
+        get markedText() {
+            return marked.parse(this.text);
+        }
+    }">
+        <div x-html="markedText"></div>
+        <textarea name="text" x-model="text" class="resize-none"></textarea>
+    </section>
+    <div id="content"></div> -->
 </body>
 
 </html>
