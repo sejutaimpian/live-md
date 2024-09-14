@@ -78,6 +78,8 @@
             }
         }
     </style>
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- plugin alpineJS, myScript, core alpineJS -->
@@ -96,10 +98,64 @@
                     <h1 class="sr-only">Live-MD</h1>
                     <img src="logo.png" alt="Live-MD" class="size-8 dark:invert">
                 </a>
-                <button type="button"
-                    class="px-2 py-2 text-sm font-medium tracking-wide text-center transition bg-transparent cursor-pointer md:text-base xl:text-lg whitespace-nowrap rounded-xl text-slate-900 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:text-white dark:focus-visible:outline-white">Reset</button>
-                <button type="button"
-                    class="px-2 py-2 text-sm font-medium tracking-wide text-center transition bg-transparent cursor-pointer md:text-base xl:text-lg whitespace-nowrap rounded-xl text-slate-900 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:text-white dark:focus-visible:outline-white">Copy</button>
+                <button type="button" @click='Swal.fire({
+  title: "Are you sure?",
+  text: "You wont be able to revert this!",
+  icon: "warning",
+  customClass: {
+    popup: "text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900",
+    title: "text-slate-900 dark:text-white",
+    text: "text-slate-900 dark:text-white",
+  },
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Yes, delete it!"
+}).then((result) => {
+  if (result.isConfirmed) {
+    Alpine.$data(main).text = "";
+    Swal.fire({
+        title: "Deleted!",
+        icon: "success",
+        customClass: {
+            popup: "text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900",
+            title: "text-slate-900 dark:text-white",
+            text: "text-slate-900 dark:text-white",
+        },
+    });
+  }
+});' class="px-2 py-2 text-sm font-medium tracking-wide text-center transition bg-transparent cursor-pointer md:text-base xl:text-lg whitespace-nowrap rounded-xl text-slate-900 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:text-white dark:focus-visible:outline-white">
+                    <span class="hidden md:inline">
+                        Reset
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-5 md:hidden">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>
+                </button>
+                <button type="button" @click="
+                        navigator.clipboard.writeText(Alpine.$data(main).text);
+                        Swal.fire({
+                            title: 'Copied!',
+                            icon: 'success',
+                            customClass: {
+                                popup: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900',
+                                title: 'text-slate-900 dark:text-white',
+                                text: 'text-slate-900 dark:text-white',
+                            },
+                        });
+                "
+                    class="px-2 py-2 text-sm font-medium tracking-wide text-center transition bg-transparent cursor-pointer md:text-base xl:text-lg whitespace-nowrap rounded-xl text-slate-900 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:text-white dark:focus-visible:outline-white">
+                    <span class="hidden md:inline">
+                        Copy
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-5 md:hidden">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
+                    </svg>
+                </button>
 
             </div>
             <a href="https://github.com/sejutaimpian/live-md">
@@ -115,23 +171,13 @@
             get markedText() {
                 return marked.parse(this.text);
             }
-        }">
+        }" id="main">
         <textarea name="text" x-model="text" class="flex-1 resize-none focus:outline-none bg-inherit no-scrollbar"
-            placeholder="Write your markdown here..." @input='$refs.content.scrollTo(0, $refs.content.scrollHeight)'
-            @keyup.escape='$refs.content.scrollTo(0, $refs.content.scrollHeight)'></textarea>
+            placeholder="Write your markdown here..."
+            @input='$refs.content.scrollTo(0, $refs.content.scrollHeight)'></textarea>
         <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert"
             x-html="markedText" x-ref="content"></div>
     </main>
-    <!-- <section x-data="{
-        text: 'Hello',
-        get markedText() {
-            return marked.parse(this.text);
-        }
-    }">
-        <div x-html="markedText"></div>
-        <textarea name="text" x-model="text" class="resize-none"></textarea>
-    </section>
-    <div id="content"></div> -->
 </body>
 
 </html>
