@@ -84,7 +84,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- plugin alpineJS, myScript, core alpineJS -->
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
-    <script defer>
+    <script>
         const initText = `# Markdown syntax guide
 
 ## Headers
@@ -266,7 +266,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             class="flex-1 leading-relaxed resize-none focus:outline-none bg-inherit no-scrollbar"
             placeholder="Write your markdown here..."
             @input='$refs.content.scrollTo(0, $refs.content.scrollHeight)'></textarea>
-        <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert"
+        <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert before:prose-code:content-none after:prose-code:content-none prose-code:font-normal prose-code:bg-slate-200 dark:prose-code:bg-slate-700 prose-code:px-2 prose-code:rounded-md"
             x-html="markedText" x-ref="content"></div>
     </main>
 </body>
