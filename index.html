@@ -285,6 +285,14 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 start = editor.selectionStart
                 end = editor.selectionEnd
                 isSelectCharacter = start !== end
+                charBefore = this.text.slice(start-2, start)
+                charAfter = this.text.slice(end, end+2)
+                isInBoldMode = charBefore === charAfter
+                if(isInBoldMode){
+                    this.text = this.text.slice(0, start-2) + this.text.slice(start, end) + this.text.slice(end+2)
+                    $nextTick(() => { editor.setSelectionRange(start-2, end-2) });
+                    return
+                }
                 if(isSelectCharacter){
                     selectedText = this.text.substring(start, end)
                     boldText = '__' + selectedText + '__'
