@@ -439,11 +439,11 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 preText = ''
                 table = `| Default columns | Left columns | Center columns | Right columns |\n| --- | :--- | :---: | ---:|\n| default foo | left foo | center foo | right foo |\n| default bar | left bar | center bar | right bar |\n\n`
                 
-                if(!this.text.slice(start-1, start) !== '\n'){
+                if(this.text.slice(start-1, start) !== '\n'){
                     preText = '\n\n'
                 }
                 this.text = this.text.slice(0, start) + preText + table + this.text.slice(end)
-                $nextTick(() => { editor.setSelectionRange(end+cursor, end+cursor) });
+                $nextTick(() => { editor.setSelectionRange(start + table.length, start + table.length) });
                 
             },
         }" id="main">
