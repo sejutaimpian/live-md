@@ -405,6 +405,20 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
                 }
             },
+            setImage(){
+                start = editor.selectionStart
+                end = editor.selectionEnd
+                isSelectCharacter = start !== end
+                if(isSelectCharacter){
+                    selectedText = this.text.substring(start, end)
+                    angleBracketsText = '![' + selectedText + ']()'
+                    this.text = this.text.slice(0, start) + angleBracketsText + this.text.slice(end)
+                    $nextTick(() => { editor.setSelectionRange(start+2, start+2+selectedText.length) });
+                } else {
+                    this.text = this.text.slice(0, start) + '![]()' + this.text.slice(end)
+                    $nextTick(() => { editor.setSelectionRange(start+2, end+2) });
+                }
+            },
             setHorizontalRule(){
                 start = editor.selectionStart
                 end = editor.selectionEnd
@@ -426,7 +440,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             @keydown.ctrl.i="setItalic" @keydown.ctrl.'="setQuote" @keydown.ctrl.alt.1="setHeading(1)"
             @keydown.ctrl.alt.2="setHeading(2)" @keydown.ctrl.alt.3="setHeading(3)" @keydown.ctrl.alt.4="setHeading(4)"
             @keydown.tab.prevent="setTab" @keydown.`.prevent="setInlineCode" @keydown.[.prevent="setLink"
-            @keydown.ctrl.q="setHorizontalRule"></textarea>
+            @keydown.ctrl.!.prevent="setImage" @keydown.ctrl.q="setHorizontalRule"></textarea>
         <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert before:prose-code:content-none after:prose-code:content-none prose-code:font-normal prose-code:bg-slate-200 [&>pre>code]:bg-slate-800 dark:prose-code:bg-slate-700 dark:[&>pre>code]:text-slate-300 dark:[&>pre>code]:bg-slate-950 prose-code:px-2 prose-code:rounded-md [&>pre>code]:px-0"
             x-html="markedText" x-ref="content"></div>
     </main>
