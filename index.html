@@ -307,6 +307,16 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 start = editor.selectionStart
                 end = editor.selectionEnd
                 isSelectCharacter = start !== end
+
+                charBefore = this.text.slice(start-1, start) === '_' && this.text.slice(start-2, start-1) !== '_'
+                charAfter = this.text.slice(end, end+1) === '_' && this.text.slice(end+1, end+2) !== '_'
+                isInItalicMode = charBefore && charAfter
+                isInBoldItalicMode = this.text.slice(start-3, start) === '___' && this.text.slice(end, end+3) === '___'
+                if(isInItalicMode || isInBoldItalicMode){
+                    this.text = this.text.slice(0, start-1) + this.text.slice(start, end) + this.text.slice(end+1)
+                    $nextTick(() => { editor.setSelectionRange(start-1, end-1) });
+                    return
+                }
                 if(isSelectCharacter){
                     selectedText = this.text.substring(start, end)
                     italicText = '_' + selectedText + '_'
