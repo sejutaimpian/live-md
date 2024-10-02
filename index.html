@@ -435,6 +435,20 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
                 }
             },
+            setHorizontalRule(){
+                start = editor.selectionStart
+                end = editor.selectionEnd
+                cursor = 6
+                if(this.text.slice(start-1, start) === '\n'){
+                    horizontalRuleText = '\n---\n\n'
+                } else {
+                    horizontalRuleText = '\n\n---\n\n'
+                    cursor += 1
+                }
+                this.text = this.text.slice(0, start) + horizontalRuleText + this.text.slice(end)
+                $nextTick(() => { editor.setSelectionRange(end+cursor, end+cursor) });
+                
+            },
         }" id="main">
         <textarea id="editor" autofocus name="text" spellcheck="false" x-model="text"
             class="flex-1 leading-relaxed resize-none focus:outline-none bg-inherit no-scrollbar"
@@ -442,7 +456,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             @keydown.ctrl.i="setItalic" @keydown.ctrl.'="setQuote" @keydown.ctrl.alt.1="setHeading(1)"
             @keydown.ctrl.alt.2="setHeading(2)" @keydown.ctrl.alt.3="setHeading(3)" @keydown.ctrl.alt.4="setHeading(4)"
             @keydown.tab.prevent="setTab" @keydown.`.prevent="setInlineCode" @keydown.[.prevent="setAngleBrackets"
-            @keydown.(.prevent="setParentheses"></textarea>
+            @keydown.(.prevent="setParentheses" @keydown.ctrl.q="setHorizontalRule"></textarea>
         <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert before:prose-code:content-none after:prose-code:content-none prose-code:font-normal prose-code:bg-slate-200 [&>pre>code]:bg-slate-800 dark:prose-code:bg-slate-700 dark:[&>pre>code]:text-slate-300 dark:[&>pre>code]:bg-slate-950 prose-code:px-2 prose-code:rounded-md [&>pre>code]:px-0"
             x-html="markedText" x-ref="content"></div>
     </main>
