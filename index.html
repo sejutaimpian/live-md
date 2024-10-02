@@ -281,66 +281,69 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 if(!Alpine.$data(scrollButton).isScrollToBottom) return
                 $refs.content.scrollTo(0, $refs.content.scrollHeight)
             },
-            setBold(el){
-                start = el.selectionStart
-                end = el.selectionEnd
-                if(start === end){
-                    this.text = this.text.slice(0, start) + '____' + this.text.slice(end)
-                    $nextTick(() => { el.setSelectionRange(start+2, end+2) });
-                }else{
+            setBold(){
+                start = editor.selectionStart
+                end = editor.selectionEnd
+                isSelectCharacter = start !== end
+                if(isSelectCharacter){
                     selectedText = this.text.substring(start, end)
                     boldText = '__' + selectedText + '__'
                     this.text = this.text.slice(0, start) + boldText + this.text.slice(end)
-                    $nextTick(() => { el.setSelectionRange(start+2, end+2) });
+                    $nextTick(() => { editor.setSelectionRange(start+2, end+2) });
+                } else {
+                    this.text = this.text.slice(0, start) + '____' + this.text.slice(end)
+                    $nextTick(() => { editor.setSelectionRange(start+2, end+2) });
                 }
             },
-            setItalic(el){
-                start = el.selectionStart
-                end = el.selectionEnd
-                if(start === end){
-                    this.text = this.text.slice(0, start) + '__' + this.text.slice(end)
-                    $nextTick(() => { el.setSelectionRange(start+1, end+1) });
-                }else{
+            setItalic(){
+                start = editor.selectionStart
+                end = editor.selectionEnd
+                isSelectCharacter = start !== end
+                if(isSelectCharacter){
                     selectedText = this.text.substring(start, end)
                     italicText = '_' + selectedText + '_'
                     this.text = this.text.slice(0, start) + italicText + this.text.slice(end)
-                    $nextTick(() => { el.setSelectionRange(start+1, end+1) });
+                    $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
+                }else{
+                    this.text = this.text.slice(0, start) + '__' + this.text.slice(end)
+                    $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
                 }
             },
-            setQuote(el){
-                start = el.selectionStart
-                end = el.selectionEnd
+            setQuote(){
+                start = editor.selectionStart
+                end = editor.selectionEnd
                 textBefore = this.text.slice(0,start)
                 lastEnter = textBefore.lastIndexOf('\n')
                 lastQuote = textBefore.lastIndexOf('>')
-                if(lastEnter > lastQuote){
-                    this.text = this.text.slice(0, lastEnter+1) + '> ' + this.text.slice(lastEnter+1)
-                    $nextTick(() => { el.setSelectionRange(start+2, end+2) });
-                } else {
+                isInQuoteMode = lastEnter < lastQuote
+                if(isInQuoteMode){
                     this.text = this.text.slice(0, lastQuote) + this.text.slice(lastEnter+3)
-                    $nextTick(() => { el.setSelectionRange(start-2, end-2) });
+                    $nextTick(() => { editor.setSelectionRange(start-2, end-2) });
+                } else {
+                    this.text = this.text.slice(0, lastEnter+1) + '> ' + this.text.slice(lastEnter+1)
+                    $nextTick(() => { editor.setSelectionRange(start+2, end+2) });
                 }
             },
-            setHeading1(el){
-                start = el.selectionStart
-                end = el.selectionEnd
+            setH1(){
+                start = editor.selectionStart
+                end = editor.selectionEnd
                 textBefore = this.text.slice(0,start)
                 lastEnter = textBefore.lastIndexOf('\n')
                 lastHashtag = textBefore.lastIndexOf('#')
-                if(lastEnter > lastHashtag){
-                    this.text = this.text.slice(0, lastEnter+1) + '# ' + this.text.slice(lastEnter+1)
-                    $nextTick(() => { el.setSelectionRange(start+2, end+2) });
-                } else {
+                isInH1Mode = lastEnter < lastHashtag
+                if(isInH1Mode){
                     this.text = this.text.slice(0, lastHashtag) + this.text.slice(lastEnter+3)
-                    $nextTick(() => { el.setSelectionRange(start-2, end-2) });
+                    $nextTick(() => { editor.setSelectionRange(start-2, end-2) });
+                } else {
+                    this.text = this.text.slice(0, lastEnter+1) + '# ' + this.text.slice(lastEnter+1)
+                    $nextTick(() => { editor.setSelectionRange(start+2, end+2) });
                 }
             }
         }" id="main">
-        <textarea autofocus name="text" spellcheck="false" x-model="text"
+        <textarea id="editor" autofocus name="text" spellcheck="false" x-model="text"
             class="flex-1 leading-relaxed resize-none focus:outline-none bg-inherit no-scrollbar"
-            placeholder="Write your markdown here..." @input='scrollToBottom' @keydown.ctrl.b="setBold($el)"
-            @keydown.ctrl.i="setItalic($el)" @keydown.ctrl.'="setQuote($el)"
-            @keydown.ctrl.alt.1="setHeading1($el)"></textarea>
+            placeholder="Write your markdown here..." @input='scrollToBottom' @keydown.ctrl.b="setBold"
+            @keydown.ctrl.i="setItalic" @keydown.ctrl.'="setQuote" @keydown.ctrl.alt.1="setH1"></textarea>
         <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert before:prose-code:content-none after:prose-code:content-none prose-code:font-normal prose-code:bg-slate-200 [&>pre>code]:bg-slate-800 dark:prose-code:bg-slate-700 dark:[&>pre>code]:text-slate-300 dark:[&>pre>code]:bg-slate-950 prose-code:px-2 prose-code:rounded-md [&>pre>code]:px-0"
             x-html="markedText" x-ref="content"></div>
     </main>
