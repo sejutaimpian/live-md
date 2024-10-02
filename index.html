@@ -321,9 +321,22 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     $nextTick(() => { el.setSelectionRange(start-2, end-2) });
                 }
             },
-            
+            setHeading1(el){
+                start = el.selectionStart
+                end = el.selectionEnd
+                textBefore = this.text.slice(0,start)
+                lastEnter = textBefore.lastIndexOf('\n')
+                lastHashtag = textBefore.lastIndexOf('#')
+                if(lastEnter > lastHashtag){
+                    this.text = this.text.slice(0, lastEnter+1) + '# ' + this.text.slice(lastEnter+1)
+                    $nextTick(() => { el.setSelectionRange(start+2, end+2) });
+                } else {
+                    this.text = this.text.slice(0, lastHashtag) + this.text.slice(lastEnter+3)
+                    $nextTick(() => { el.setSelectionRange(start-2, end-2) });
+                }
+            }
         }" id="main">
-        <textarea name="text" spellcheck="false" x-model="text"
+        <textarea autofocus name="text" spellcheck="false" x-model="text"
             class="flex-1 leading-relaxed resize-none focus:outline-none bg-inherit no-scrollbar"
             placeholder="Write your markdown here..." @input='scrollToBottom' @keydown.ctrl.b="setBold($el)"
             @keydown.ctrl.i="setItalic($el)" @keydown.ctrl.'="setQuote($el)"
