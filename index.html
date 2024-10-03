@@ -522,14 +522,14 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 start = editor.selectionStart
                 end = editor.selectionEnd
                 preText = ''
-                table = `| Default columns | Left columns | Center columns | Right columns |\n| --- | :--- | :---: | ---:|\n| default
-                foo | left foo | center foo | right foo |\n| default bar | left bar | center bar | right bar |\n\n`
+                table = `\`\`\`\n\n\`\`\`\n\n`
                 
                 if(this.text.slice(start-1, start) !== '\n'){
-                preText = '\n\n'
+                    preText = '\n\n'
+                    console.log(preText.length)
                 }
                 this.text = this.text.slice(0, start) + preText + table + this.text.slice(end)
-                $nextTick(() => { editor.setSelectionRange(start + table.length, start + table.length) });
+                $nextTick(() => { editor.setSelectionRange(start+4+preText.length, start+4+preText.length) });
             },
         }" id="main">
         <textarea id="editor" autofocus name="text" spellcheck="false" x-model="text"
@@ -537,7 +537,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             placeholder="Write your markdown here..." @input='scrollToBottom' @keydown.ctrl.b="setBold"
             @keydown.ctrl.i="setItalic" @keydown.ctrl.'="setQuote" @keydown.ctrl.alt.1="setHeading(1)"
             @keydown.ctrl.alt.2="setHeading(2)" @keydown.ctrl.alt.3="setHeading(3)" @keydown.ctrl.alt.4="setHeading(4)"
-            @keydown.tab.prevent="setTab" @keydown.`.prevent="setInlineCode" @keydown.ctrl.`.prevent="setBlockCode"
+            @keydown.tab.prevent="setTab" @keydown.`.prevent="setInlineCode" @keydown.ctrl.slash.prevent="setBlockCode"
             @keydown.[.prevent="setLink" @keydown.ctrl.!.prevent="setImage" @keydown.ctrl.q="setHorizontalRule"
             @keydown.ctrl.g.prevent="setTable" @keydown.ctrl.period="setList()" @keydown.ctrl.l.prevent="setList(1)"
             @keydown.enter="handleEnter" @keydown.~.prevent="setStrikethrough"></textarea>
