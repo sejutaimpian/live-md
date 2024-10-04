@@ -164,7 +164,18 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
 
 <body
     class="flex flex-col justify-between overflow-hidden bg-white h-svh text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-    @keyup.ctrl.space='isDark = !isDark'>
+    @keyup.ctrl.space='isDark = !isDark' x-data="{
+        isFocus: false,
+        showBottomBar(){
+            this.isFocus = true
+        },
+        hideBottomBar(){
+            this.isFocus = false
+        },
+        get isInMobileScreen(){
+            return screen.width <= 768
+        }
+    }">
     <header class="py-3 border-b bg-slate-100 dark:bg-slate-800 border-b-slate-300 dark:border-b-slate-700">
         <nav class="flex items-center justify-between px-4 md:px-10 xl:container xl:mx-auto xl:px-0">
             <div class="flex items-center gap-x-2">
@@ -270,8 +281,8 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             </a>
         </nav>
     </header>
-    <main
-        class="overflow-y-scroll no-scrollbar flex flex-col-reverse flex-1 md:flex-row divide-y-reverse divide-y-2 md:divide-y-0 md:divide-x-2  divide-slate-300 dark:divide-slate-700 [&>*]:p-4 md:[&>*]:p-10"
+    <main :class="(isFocus && isInMobileScreen) && 'pb-12'"
+        class="overflow-y-scroll no-scrollbar flex flex-col-reverse flex-1 md:flex-row divide-y-reverse divide-y-2 md:divide-y-0 md:divide-x-2  divide-slate-300 dark:divide-slate-700 [&>*]:px-4 md:[&>*]:p-10"
         x-data="{
             text: $persist(initText),
             get markedText() {
@@ -533,6 +544,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             },
         }" id="main">
         <textarea id="editor" autofocus name="text" spellcheck="false" x-model="text"
+            :class="(isFocus && isInMobileScreen) && 'pb-0'"
             class="flex-1 leading-relaxed resize-none focus:outline-none bg-inherit no-scrollbar"
             placeholder="Write your markdown here..." @input='scrollToBottom' @keydown.ctrl.b="setBold"
             @keydown.ctrl.i="setItalic" @keydown.ctrl.'="setQuote" @keydown.ctrl.alt.1="setHeading(1)"
@@ -540,10 +552,16 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             @keydown.tab.prevent="setTab" @keydown.`.prevent="setInlineCode" @keydown.ctrl.slash.prevent="setBlockCode"
             @keydown.[.prevent="setLink" @keydown.ctrl.!.prevent="setImage" @keydown.ctrl.q="setHorizontalRule"
             @keydown.ctrl.g.prevent="setTable" @keydown.ctrl.period="setList()" @keydown.ctrl.l.prevent="setList(1)"
-            @keydown.enter="handleEnter" @keydown.~.prevent="setStrikethrough"></textarea>
+            @keydown.enter="handleEnter" @keydown.~.prevent="setStrikethrough" @focusin="showBottomBar"
+            focusout="hideBottomBar"></textarea>
         <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert before:prose-code:content-none after:prose-code:content-none prose-code:font-normal prose-code:bg-slate-200 [&>pre>code]:bg-slate-800 dark:prose-code:bg-slate-700 dark:[&>pre>code]:text-slate-300 dark:[&>pre>code]:bg-slate-950 prose-code:px-2 prose-code:rounded-md [&>pre>code]:px-0"
             x-html="markedText" x-ref="content"></div>
     </main>
+    <!-- Bottom Bar for Mobile -->
+    <div class="fixed inset-x-0 bottom-0 flex p-2 border-t border-t-slate-300 bg-slate-100 text-slate-900 dark:bg-slate-800 dark:border-t-slate-700 dark:text-slate-100 gap-x-4 md:hidden"
+        x-show="isFocus">
+        <button type="button" @click="console.log(isInMobileScreen)">Developer</button>
+    </div>
 </body>
 
 </html>
