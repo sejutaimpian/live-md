@@ -165,7 +165,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
 <body id="body"
     class="flex flex-col justify-between h-screen overflow-hidden bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
     @keyup.ctrl.space='isDark = !isDark' @keydown.ctrl.h.prevent @keyup.ctrl.h.prevent="modalIsOpen = !modalIsOpen"
-    x-data="{ modalIsOpen: true }">
+    x-data="{ modalIsOpen: $persist(true) }">
     <header class="py-3 border-b bg-slate-100 dark:bg-slate-800 border-b-slate-300 dark:border-b-slate-700" x-data="{
         resetText(){
             Swal.fire({
