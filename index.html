@@ -166,7 +166,50 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
     class="flex flex-col justify-between h-screen overflow-hidden bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
     @keyup.ctrl.space='isDark = !isDark' @keydown.ctrl.h.prevent @keyup.ctrl.h.prevent="modalIsOpen = !modalIsOpen"
     x-data="{ modalIsOpen: true }">
-    <header class="py-3 border-b bg-slate-100 dark:bg-slate-800 border-b-slate-300 dark:border-b-slate-700">
+    <header class="py-3 border-b bg-slate-100 dark:bg-slate-800 border-b-slate-300 dark:border-b-slate-700" x-data="{
+        resetText(){
+            Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You wont be able to revert this!',
+                        icon: 'warning',
+                        customClass: {
+                            popup: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900',
+                            title: 'text-slate-900 dark:text-white',
+                            text: 'text-slate-900 dark:text-white',
+                        },
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, reset it!'
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            Alpine.$data(main).text = initText;
+                            Swal.fire({
+                                title: 'Success!',
+                                icon: 'success',
+                                customClass: {
+                                    popup: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900',
+                                    title: 'text-slate-900 dark:text-white',
+                                    text: 'text-slate-900 dark:text-white',
+                                },
+                            });
+                        }
+            });
+        },
+        copyText(){
+            navigator.clipboard.writeText(Alpine.$data(main).text);
+            Swal.fire({
+                title: 'Copied!',
+                icon: 'success',
+                customClass: {
+                    popup: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900',
+                    title: 'text-slate-900 dark:text-white',
+                    text: 'text-slate-900 dark:text-white',
+                },
+            });
+        }
+    }" @keydown.ctrl.delete.prevent.window @keyup.ctrl.delete.prevent.window="resetText"
+        @keydown.ctrl.shift.c.prevent.window @keyup.ctrl.shift.c.prevent.window="copyText">
         <nav class="flex items-center justify-between px-4 md:px-10 xl:container xl:mx-auto xl:px-0">
             <div class="flex items-center">
                 <a href="/" class="mr-4">
@@ -175,33 +218,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 </a>
                 <button type="button"
                     class="px-2 py-2 text-sm font-medium tracking-wide text-center transition bg-transparent cursor-pointer md:text-base xl:text-lg whitespace-nowrap rounded-xl text-slate-900 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:text-white dark:focus-visible:outline-white"
-                    @click='Swal.fire({
-                        title: "Are you sure?",
-                        text: "You wont be able to revert this!",
-                        icon: "warning",
-                        customClass: {
-                            popup: "text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900",
-                            title: "text-slate-900 dark:text-white",
-                            text: "text-slate-900 dark:text-white",
-                        },
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Yes, delete it!"
-                        }).then((result) => {
-                        if (result.isConfirmed) {
-                            Alpine.$data(main).text = initText;
-                            Swal.fire({
-                                title: "Success!",
-                                icon: "success",
-                                customClass: {
-                                    popup: "text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900",
-                                    title: "text-slate-900 dark:text-white",
-                                    text: "text-slate-900 dark:text-white",
-                                },
-                            });
-                        }
-                    });'>
+                    @click='resetText'>
                     <span class="hidden md:inline">
                         reset
                     </span>
@@ -213,17 +230,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 </button>
                 <button type="button"
                     class="px-2 py-2 text-sm font-medium tracking-wide text-center transition bg-transparent cursor-pointer md:text-base xl:text-lg whitespace-nowrap rounded-xl text-slate-900 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:text-white dark:focus-visible:outline-white"
-                    @click="navigator.clipboard.writeText(Alpine.$data(main).text);
-                        Swal.fire({
-                            title: 'Copied!',
-                            icon: 'success',
-                            customClass: {
-                                popup: 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900',
-                                title: 'text-slate-900 dark:text-white',
-                                text: 'text-slate-900 dark:text-white',
-                            },
-                        });
-                ">
+                    @click="copyText">
                     <span class="hidden md:inline">
                         copy
                     </span>
@@ -919,7 +926,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 </div>
                 <div>
                     <h3 class="mb-2">Block</h3>
-                    <p class="text-sm">These shortcuts are used to apply or remove block formatting</p>
+                    <p class="text-sm">These shortcuts are used to apply block formatting</p>
                     <div class="grid grid-cols-4 gap-4 mt-4">
                         <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
                             <p>Quote</p>
@@ -981,6 +988,35 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     <h3 class="mb-2">Miscellaneous</h3>
                     <p class="text-sm">Here are some more keyboard shortcuts</p>
                     <div class="grid grid-cols-4 gap-4 mt-4">
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Reset</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">DELETE</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Copy All</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">SHIFT</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">C</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Light/Dark Mode</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">SPACE</kbd>
+                            </div>
+                        </div>
                         <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
                             <p>Toggle hint</p>
                             <div>
