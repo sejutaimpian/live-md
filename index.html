@@ -162,9 +162,10 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
 
 </head>
 
-<body
+<body id="body"
     class="flex flex-col justify-between h-screen overflow-hidden bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-    @keyup.ctrl.space='isDark = !isDark' id="body">
+    @keyup.ctrl.space='isDark = !isDark' @keydown.ctrl.h.prevent @keyup.ctrl.h.prevent="modalIsOpen = !modalIsOpen"
+    x-data="{ modalIsOpen: true }">
     <header class="py-3 border-b bg-slate-100 dark:bg-slate-800 border-b-slate-300 dark:border-b-slate-700">
         <nav class="flex items-center justify-between px-4 md:px-10 xl:container xl:mx-auto xl:px-0">
             <div class="flex items-center">
@@ -265,7 +266,17 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                         auto scroll
                     </div>
                 </button>
-                <button type="button" @click="console.log(content.clientHeight, content.rows)">Dev</button>
+                <button type="button" @click='modalIsOpen = true'
+                    class="items-center hidden px-2 py-2 text-sm font-medium tracking-wide text-center transition bg-transparent cursor-pointer md:inline-flex gap-x-2 md:text-base xl:text-lg whitespace-nowrap rounded-xl text-slate-900 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:text-white dark:focus-visible:outline-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
+                        <path
+                            d="M3 17H21V19H3V17ZM3 11H6V14H3V11ZM8 11H11V14H8V11ZM3 5H6V8H3V5ZM13 5H16V8H13V5ZM18 5H21V8H18V5ZM13 11H16V14H13V11ZM18 11H21V14H18V11ZM8 5H11V8H8V5Z">
+                        </path>
+                    </svg>
+                    <span class="hidden md:inline">
+                        shortcut
+                    </span>
+                </button>
             </div>
             <a href="https://github.com/sejutaimpian/live-md">
                 <img src="https://img.shields.io/github/stars/sejutaimpian/live-md?style=social"
@@ -277,14 +288,14 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
         class="overflow-y-scroll no-scrollbar flex flex-col-reverse flex-1 md:flex-row divide-y-reverse divide-y-2 md:divide-y-0 md:divide-x-2  divide-slate-300 dark:divide-slate-700 [&>*]:p-4 md:[&>*]:p-10"
         x-data="{
             isFocus: false,
+            get isInMobileScreen(){
+                return screen.width <= 768
+            },
             showBottomBar(){
                 this.isFocus = true
             },
             hideBottomBar(){
                 this.isFocus = false
-            },
-            get isInMobileScreen(){
-                return screen.width <= 768 
             },
             text: $persist(initText),
             get markedText() {
@@ -767,6 +778,239 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             </div>
         </div>
     </main>
+    <!-- Hint/Keyboard Shortcut -->
+    <div x-cloak x-show="modalIsOpen" x-transition.opacity.duration.200ms @keydown.esc.window="modalIsOpen = false"
+        @click.self="modalIsOpen = false"
+        class="fixed inset-0 z-30 items-end justify-center hidden p-4 pb-8 md:flex bg-black/20 backdrop-blur-md sm:items-center lg:p-8"
+        role="dialog" aria-modal="true" aria-labelledby="defaultModalTitle">
+        <!-- Modal Dialog -->
+        <div x-show="modalIsOpen"
+            x-transition:enter="transition ease-out duration-200 delay-100 motion-reduce:transition-opacity"
+            x-transition:enter-start="opacity-0 scale-50" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-out duration-200 motion-reduce:transition-opacity"
+            x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-50"
+            class="flex flex-col max-w-5xl overflow-hidden bg-white border rounded-xl border-slate-300 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+            <!-- Dialog Header -->
+            <div
+                class="flex items-center justify-between p-4 border-b gap-x-20 border-slate-300 bg-slate-100/60 dark:border-slate-700 dark:bg-slate-900/20">
+                <header class="space-y-2">
+                    <div class="flex items-center gap-x-6">
+                        <h2>Keyboard Combos</h2>
+                        <div>
+                            <kbd
+                                class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                            <kbd
+                                class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">H</kbd>
+                        </div>
+                    </div>
+                    <p class="text-lg">Master these to be the gratest Live-MD player</p>
+                </header>
+                <div class="flex md:[&>svg]:size-16 lg:[&>svg]:size-20">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 13V20L4 12L12 4V11H20V13H12Z"></path>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13 12H20L12 20L4 12H11V4H13V12Z"></path>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13 12V20H11V12H4L12 4L20 12H13Z"></path>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 13H4V11H12V4L20 12L12 20V13Z"></path>
+                    </svg>
+                </div>
+            </div>
+            <!-- Dialog Body -->
+            <div class="p-4 max-h-[70vh] overflow-y-scroll no-scrollbar space-y-4">
+                <div>
+                    <h3 class="mb-2">Heading</h3>
+                    <p class="text-sm">These shortcuts are used to apply or remove heading formatting</p>
+                    <div class="grid grid-cols-4 gap-4 mt-4">
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Heading 1</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">ALT</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">1</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Heading 2</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">ALT</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">2</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Heading 3</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">ALT</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">3</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Heading 4</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">ALT</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">4</kbd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="mb-2">Inline</h3>
+                    <p class="text-sm">These shortcuts are used to apply or remove inline formatting</p>
+                    <div class="grid grid-cols-4 gap-4 mt-4">
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Bold</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">B</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Italic</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">I</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Strikethrough</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">~</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Inline Code</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">`</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Link</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">[</kbd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="mb-2">Block</h3>
+                    <p class="text-sm">These shortcuts are used to apply or remove block formatting</p>
+                    <div class="grid grid-cols-4 gap-4 mt-4">
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Quote</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">'</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Unordered List</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">.</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Ordered List</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">L</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Block Code</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">/</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Image</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">!</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Table</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">G</kbd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="mb-2">Miscellaneous</h3>
+                    <p class="text-sm">Here are some more keyboard shortcuts</p>
+                    <div class="grid grid-cols-4 gap-4 mt-4">
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Toggle hint</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">H</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Horizontal Rule</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">CTRL</kbd>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">Q</kbd>
+                            </div>
+                        </div>
+                        <div class="px-3 pt-1 pb-2 space-y-1 rounded-md bg-slate-100 dark:bg-slate-900">
+                            <p>Tab</p>
+                            <div>
+                                <kbd
+                                    class="inline-block px-2 py-1 font-mono text-xs font-semibold border rounded-md size-min whitespace-nowrap border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">TAB</kbd>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
