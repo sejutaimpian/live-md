@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" x-data="{isDark: $persist(false)}" :class="{'dark': isDark}">
+<html lang="id" x-data="{isDark: $persist(false)}" :class="{'dark': isDark}" id="html">
 
 <head>
     <meta charset="UTF-8">
@@ -164,7 +164,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
 
 <body
     class="flex flex-col justify-between overflow-hidden bg-white h-svh text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-    @keyup.ctrl.space='isDark = !isDark'>
+    @keyup.ctrl.space='isDark = !isDark' id="body">
     <header class="py-3 border-b bg-slate-100 dark:bg-slate-800 border-b-slate-300 dark:border-b-slate-700">
         <nav class="flex items-center justify-between px-4 md:px-10 xl:container xl:mx-auto xl:px-0">
             <div class="flex items-center gap-x-2">
@@ -289,7 +289,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             },
             scrollToBottom(){    
                 if(!Alpine.$data(scrollButton).isScrollToBottom) return
-                $refs.content.scrollTo(0, $refs.content.scrollHeight)
+                content.scrollTo(0, content.scrollHeight)
             },
             setBold(){
                 start = editor.selectionStart
@@ -300,17 +300,26 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 isInBoldMode = charBefore && charAfter
                 if(isInBoldMode){
                     this.text = this.text.slice(0, start-2) + this.text.slice(start, end) + this.text.slice(end+2)
-                    $nextTick(() => { editor.setSelectionRange(start-2, end-2) });
+                    $nextTick(() => { 
+                        editor.focus()
+                        editor.setSelectionRange(start-2, end-2)
+                    });
                     return
                 }
                 if(isSelectCharacter){
                     selectedText = this.text.substring(start, end)
                     boldText = '__' + selectedText + '__'
                     this.text = this.text.slice(0, start) + boldText + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+2, end+2) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start+2, end+2) 
+                    });
                 } else {
                     this.text = this.text.slice(0, start) + '____' + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+2, end+2) });
+                    $nextTick(() => { 
+                        editor.focus()
+                        editor.setSelectionRange(start+2, end+2)
+                    });
                 }
             },
             setItalic(){
@@ -323,17 +332,26 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 isInBoldItalicMode = this.text.slice(start-3, start) === '___' && this.text.slice(end, end+3) === '___'
                 if(isInItalicMode || isInBoldItalicMode){
                     this.text = this.text.slice(0, start-1) + this.text.slice(start, end) + this.text.slice(end+1)
-                    $nextTick(() => { editor.setSelectionRange(start-1, end-1) });
+                    $nextTick(() => { 
+                        editor.focus()
+                        editor.setSelectionRange(start-1, end-1)
+                    });
                     return
                 }
                 if(isSelectCharacter){
                     selectedText = this.text.substring(start, end)
                     italicText = '_' + selectedText + '_'
                     this.text = this.text.slice(0, start) + italicText + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
+                    $nextTick(() => { 
+                        editor.focus()
+                        editor.setSelectionRange(start+1, end+1)
+                    });
                 }else{
                     this.text = this.text.slice(0, start) + '__' + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
+                    $nextTick(() => { 
+                        editor.focus()
+                        editor.setSelectionRange(start+1, end+1)
+                    });
                 }
             },
             setQuote(){
@@ -345,10 +363,16 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 isInQuoteMode = firstCharacterInLine === '>'
                 if(isInQuoteMode){
                     this.text = this.text.slice(0, lastEnter+1) + this.text.slice(lastEnter+3)
-                    $nextTick(() => { editor.setSelectionRange(start-2, end-2) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start-2, end-2)
+                    });
                 } else {
                     this.text = this.text.slice(0, lastEnter+1) + '> ' + this.text.slice(lastEnter+1)
-                    $nextTick(() => { editor.setSelectionRange(start+2, end+2) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start+2, end+2)
+                    });
                 }
             },
             setHeading(level){
@@ -365,26 +389,37 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                         if(char !== '#') break;
                         if(char === '#') numberOfHashtag++
                     }
-
                     if(numberOfHashtag === level){
                         this.text = this.text.slice(0, lastEnter+1) + this.text.slice(lastEnter+3+(numberOfHashtag-1))
-                        $nextTick(() => { editor.setSelectionRange(start-2-(numberOfHashtag-1), end-2-(numberOfHashtag-1)) });
+                        $nextTick(() => {
+                            editor.focus()
+                            editor.setSelectionRange(start-2-(numberOfHashtag-1), end-2-(numberOfHashtag-1))
+                        });
                     } else { 
                         selisih = numberOfHashtag - level
                         this.text = this.text.slice(0, lastEnter+1) + this.text.slice(lastEnter+3+(numberOfHashtag-1))
                         this.text = this.text.slice(0, lastEnter+1) + '#'.repeat(level) + ' ' + this.text.slice(lastEnter+1)
-                        $nextTick(() => { editor.setSelectionRange(start-selisih, end-selisih) });
+                        $nextTick(() => {
+                            editor.focus()
+                            editor.setSelectionRange(start-selisih, end-selisih)
+                        });
                     }
                 } else {
                     this.text = this.text.slice(0, lastEnter+1) + '#'.repeat(level) + ' ' + this.text.slice(lastEnter+1)
-                    $nextTick(() => { editor.setSelectionRange(start+level+1, end+level+1) });
+                    $nextTick(() => { 
+                        editor.focus()
+                        editor.setSelectionRange(start+level+1, end+level+1)
+                    });
                 }
             },
             setTab(){
                 start = editor.selectionStart
                 end = editor.selectionEnd
                 this.text = this.text.slice(0, start) + '     ' +  this.text.slice(end)
-                $nextTick(() => { editor.setSelectionRange(start+5, start+5) });
+                $nextTick(() => {
+                    editor.focus()
+                    editor.setSelectionRange(start+5, start+5)
+                });
             },
             setInlineCode(){
                 start = editor.selectionStart
@@ -395,17 +430,26 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 isInInlineCodeMode = charBefore && charAfter
                 if(isInInlineCodeMode){
                     this.text = this.text.slice(0, start-1) + this.text.slice(start, end) + this.text.slice(end+1)
-                    $nextTick(() => { editor.setSelectionRange(start-1, end-1) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start-1, end-1)
+                    });
                     return
                 }
                 if(isSelectCharacter){
                     selectedText = this.text.substring(start, end)
                     inlineCodeText = '`' + selectedText + '`'
                     this.text = this.text.slice(0, start) + inlineCodeText + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start+1, end+1)
+                    });
                 } else {
                     this.text = this.text.slice(0, start) + '``' + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start+1, end+1)
+                    });
                 }
             },
             setLink(){
@@ -416,10 +460,16 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     selectedText = this.text.substring(start, end)
                     angleBracketsText = '[' + selectedText + ']()'
                     this.text = this.text.slice(0, start) + angleBracketsText + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+1, start+1+selectedText.length) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start+1, start+1+selectedText.length)
+                    });
                 } else {
                     this.text = this.text.slice(0, start) + '[]()' + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
+                    $nextTick(() => { 
+                        editor.focus()
+                        editor.setSelectionRange(start+1, end+1)
+                    });
                 }
             },
             setImage(){
@@ -430,10 +480,16 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     selectedText = this.text.substring(start, end)
                     angleBracketsText = '![' + selectedText + ']()'
                     this.text = this.text.slice(0, start) + angleBracketsText + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+2, start+2+selectedText.length) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start+2, start+2+selectedText.length)
+                    });
                 } else {
                     this.text = this.text.slice(0, start) + '![]()' + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+2, end+2) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start+2, end+2)
+                    });
                 }
             },
             setHorizontalRule(){
@@ -447,7 +503,10 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     cursor += 1
                 }
                 this.text = this.text.slice(0, start) + horizontalRuleText + this.text.slice(end)
-                $nextTick(() => { editor.setSelectionRange(end+cursor, end+cursor) });
+                $nextTick(() => {
+                    editor.focus()
+                    editor.setSelectionRange(end+cursor, end+cursor)
+                });
             },
             setTable(){
                 start = editor.selectionStart
@@ -459,7 +518,10 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     preText = '\n\n'
                 }
                 this.text = this.text.slice(0, start) + preText + table + this.text.slice(end)
-                $nextTick(() => { editor.setSelectionRange(start + table.length, start + table.length) });
+                $nextTick(() => {
+                    editor.focus()
+                    editor.setSelectionRange(start + table.length, start + table.length)
+                });
             },
             setList(isOrderedList = false){
                 start = editor.selectionStart
@@ -471,19 +533,31 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     isInListMode = firstCharacterInLine === '1'
                     if(isInListMode){
                         this.text = this.text.slice(0, lastEnter+1) + this.text.slice(lastEnter+4)
-                        $nextTick(() => { editor.setSelectionRange(start-3, end-3) });
+                        $nextTick(() => { 
+                            editor.focus()
+                            editor.setSelectionRange(start-3, end-3)
+                        });
                     } else {
                         this.text = this.text.slice(0, lastEnter+1) + '1. ' + this.text.slice(lastEnter+1)
-                        $nextTick(() => { editor.setSelectionRange(start+3, end+3) });
+                        $nextTick(() => { 
+                            editor.focus()
+                            editor.setSelectionRange(start+3, end+3)
+                        });
                     }
                 } else {
                     isInListMode = firstCharacterInLine === '-'
                     if(isInListMode){
                         this.text=this.text.slice(0, lastEnter+1) + this.text.slice(lastEnter+3)
-                        $nextTick(()=> { editor.setSelectionRange(start-2, end-2) });
+                        $nextTick(()=> { 
+                            editor.focus()
+                            editor.setSelectionRange(start-2, end-2)
+                        });
                     } else {
                         this.text = this.text.slice(0, lastEnter+1) + '- ' + this.text.slice(lastEnter+1)
-                        $nextTick(() => { editor.setSelectionRange(start+2, end+2) });
+                        $nextTick(() => {
+                            editor.focus()
+                            editor.setSelectionRange(start+2, end+2)
+                        });
                     }
                 }
             },
@@ -499,10 +573,16 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     isOrdered = this.text.slice(lastEnter+1, lastEnter+2) === '1'
                     if(isOrdered){
                         this.text = this.text.slice(0, start) + '\n1. ' + this.text.slice(end)
-                        $nextTick(() => { editor.setSelectionRange(start+4, start+4) });    
+                        $nextTick(() => {
+                            editor.focus()
+                            editor.setSelectionRange(start+4, start+4)
+                        });    
                     } else {        
                         this.text = this.text.slice(0, start) + '\n- ' + this.text.slice(end)
-                        $nextTick(() => { editor.setSelectionRange(start+3, start+3) });    
+                        $nextTick(() => {
+                            editor.focus()
+                            editor.setSelectionRange(start+3, start+3)
+                        });    
                     }
                 }
             },
@@ -515,17 +595,26 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                 isInInlineCodeMode = charBefore && charAfter
                 if(isInInlineCodeMode){
                     this.text = this.text.slice(0, start-1) + this.text.slice(start, end) + this.text.slice(end+1)
-                    $nextTick(() => { editor.setSelectionRange(start-1, end-1) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start-1, end-1) 
+                    });
                     return
                 }
                 if(isSelectCharacter){
                     selectedText = this.text.substring(start, end)
                     inlineCodeText = '~' + selectedText + '~'
                     this.text = this.text.slice(0, start) + inlineCodeText + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
+                    $nextTick(() => {
+                        editor.focus()
+                        editor.setSelectionRange(start+1, end+1) 
+                    });
                 } else {
                     this.text = this.text.slice(0, start) + '~~' + this.text.slice(end)
-                    $nextTick(() => { editor.setSelectionRange(start+1, end+1) });
+                    $nextTick(() => { 
+                        editor.focus()
+                        editor.setSelectionRange(start+1, end+1)
+                    });
                 }
             },
             setBlockCode(){
@@ -539,7 +628,10 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
                     console.log(preText.length)
                 }
                 this.text = this.text.slice(0, start) + preText + table + this.text.slice(end)
-                $nextTick(() => { editor.setSelectionRange(start+4+preText.length, start+4+preText.length) });
+                $nextTick(() => {
+                    editor.focus()
+                    editor.setSelectionRange(start+4+preText.length, start+4+preText.length)
+                });
             },
         }" id="main">
         <textarea id="editor" name="text" spellcheck="false" x-model="text"
@@ -554,7 +646,7 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             @keydown.enter="handleEnter" @keydown.~.prevent="setStrikethrough" @focusin="showBottomBar"
             @focusout="hideBottomBar"></textarea>
         <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert before:prose-code:content-none after:prose-code:content-none prose-code:font-normal prose-code:bg-slate-200 [&>pre>code]:bg-slate-800 dark:prose-code:bg-slate-700 dark:[&>pre>code]:text-slate-300 dark:[&>pre>code]:bg-slate-950 prose-code:px-2 prose-code:rounded-md [&>pre>code]:px-0"
-            x-html="markedText" x-ref="content"></div>
+            x-html="markedText" x-ref="content" id="content"></div>
         <!-- Bottom Bar for Mobile -->
         <div hidden
             class="fixed inset-x-0 bottom-0 flex justify-between !py-2 border-t border-t-slate-300 bg-slate-100 text-slate-900 dark:bg-slate-800 dark:border-t-slate-700 dark:text-slate-100 gap-x-4 md:hidden"
