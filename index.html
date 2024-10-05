@@ -552,11 +552,12 @@ Big Thanks to [markdownlivepreview](https://markdownlivepreview.com/) who inspir
             @keydown.[.prevent="setLink" @keydown.ctrl.!.prevent="setImage" @keydown.ctrl.q="setHorizontalRule"
             @keydown.ctrl.g.prevent="setTable" @keydown.ctrl.period="setList()" @keydown.ctrl.l.prevent="setList(1)"
             @keydown.enter="handleEnter" @keydown.~.prevent="setStrikethrough" @focusin="showBottomBar"
-            focusout="hideBottomBar"></textarea>
+            @focusout="hideBottomBar"></textarea>
         <div class="flex-1 max-w-full overflow-y-scroll prose lg:prose-xl prose-slate no-scrollbar dark:prose-invert before:prose-code:content-none after:prose-code:content-none prose-code:font-normal prose-code:bg-slate-200 [&>pre>code]:bg-slate-800 dark:prose-code:bg-slate-700 dark:[&>pre>code]:text-slate-300 dark:[&>pre>code]:bg-slate-950 prose-code:px-2 prose-code:rounded-md [&>pre>code]:px-0"
             x-html="markedText" x-ref="content"></div>
         <!-- Bottom Bar for Mobile -->
-        <div class="fixed inset-x-0 bottom-0 flex justify-between !py-2 border-t border-t-slate-300 bg-slate-100 text-slate-900 dark:bg-slate-800 dark:border-t-slate-700 dark:text-slate-100 gap-x-4 md:hidden"
+        <div hidden
+            class="fixed inset-x-0 bottom-0 flex justify-between !py-2 border-t border-t-slate-300 bg-slate-100 text-slate-900 dark:bg-slate-800 dark:border-t-slate-700 dark:text-slate-100 gap-x-4 md:hidden"
             x-show="isFocus && isInMobileScreen" x-cloak>
             <div class="flex [&>button]:p-1">
                 <button type="button" class="duration-300 active:-translate-y-1 [&>svg]:size-4" @click="setHeading(1)">
